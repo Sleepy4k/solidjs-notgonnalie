@@ -1,0 +1,61 @@
+{
+  "name": "solidjs-chatbot",
+  "version": "1.0.0",
+  "description": "Simple chatbot using SolidJS",
+  "private": true,
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "author": "Sleepy4k",
+  "keywords": [
+    "solidjs",
+    "vite",
+    "typescript",
+    "tailwindcss"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sleepy4k/solidjs-chatbot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Sleepy4k/solidjs-chatbot.git"
+  },
+  "homepage": "https://github.com/Sleepy4k/solidjs-chatbot.git",
+  "dependencies": {
+    "@solidjs/meta": "^0.29.4",
+    "@solidjs/router": "^0.14.1",
+    "axios": "^1.7.2",
+    "crypto-es": "^2.1.0",
+    "firebase": "^10.12.3",
+    "solid-firebase": "^0.3.0",
+    "solid-forms": "^0.4.8",
+    "solid-icons": "^1.1.0",
+    "solid-js": "^1.8.18",
+    "solid-styled-components": "^0.28.5",
+    "solid-toast": "^0.5.0",
+    "sweetalert2": "^11.12.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "daisyui": "^4.12.10",
+    "path": "^0.12.7",
+    "postcss": "^8.4.39",
+    "solid-devtools": "^0.30.1",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.3",
+    "url": "^0.11.3",
+    "vite": "^5.3.3",
+    "vite-plugin-solid": "^2.10.2"
+  },
+  "resolutions": {
+    "solid-js": "^1.8.18"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

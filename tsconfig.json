@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "types": ["vite/client"],
+    "noEmit": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "rootDir": "./",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@models": ["./src/models/index.ts"],
+      "@consts": ["./src/consts/index.ts"],
+      "@enums": ["./src/enums/index.ts"],
+      "@utils": ["./src/utils/index.ts"],
+      "@interfaces": ["./src/interfaces/index.ts"],
+      "@contexts": ["./src/contexts/index.ts"],
+      "@services": ["./src/services/index.ts"],
+      "@components": ["./src/components/index.ts"],
+      "@components/*": ["./src/components/*"],
+      "@layouts": ["./src/layouts/index.ts"]
+    }
+  },
+}

@@ -1,0 +1,13 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2024-07-14",
+    "changes": [
+      "Initial release",
+      "Add SolidJS, Vite, TypeScript, and TailwindCSS",
+      "Implement firebase with solid-firebase",
+      "Change data handling with models",
+      "Add password hashing with crypto-es"
+    ]
+  }
+]
