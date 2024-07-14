@@ -1,0 +1,1 @@
+import{I as r,H as e,J as o,K as n,z as c}from"./index-P96H_6a0.js";const i=async()=>{const a=[];return(await c(e(n,"answers"))).forEach(s=>{a.push({id:s.id,questId:s.data().questId,answer:s.data().answer})}),a},w=async a=>{const t=await r(e(n,"answers"),a),s=await o(t);return s.exists()?{id:s.id,questId:s.data().questId,answer:s.data().answer}:null};export{w as c,i as g};
