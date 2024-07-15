@@ -1,5 +1,19 @@
 [
   {
+    "version": "1.0.1",
+    "date": "2024-07-15",
+    "changes": [
+      "Add confirmation dialog when leaving the page with unsaved changes",
+      "Change swal confirm from text to html from swal confirm component",
+      "Fix page responsiveness for mobile devices",
+      "Fix middleware when user is not logged in and accessing protected routes",
+      "Change language from English to Indonesian",
+      "Change share system from redirect to copy to clipboard",
+      "Add toast notification when copying share link",
+      "Clean up code and remove unused files"
+    ]
+  },
+  {
     "version": "1.0.0",
     "date": "2024-07-14",
     "changes": [
