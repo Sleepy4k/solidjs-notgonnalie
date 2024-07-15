@@ -11,7 +11,7 @@ interface INavBarProps {
 }
 
 export default function NavBar(props: INavBarProps) {
-  const { isLogged, logoutUser } = Auth.useAuth();
+  const { user, isLogged, logoutUser } = Auth.useAuth();
 
   const handleActive = (path: string) => {
     return location.hash.split('#')[1] === path ? 'active' : '';
@@ -155,6 +155,12 @@ export default function NavBar(props: INavBarProps) {
               class='lg:w-[2.5rem] w-9 lg:h-[2.5rem] h-9'
             />
           </A>
+          <Show when={isLogged()}>
+            <span class="lg:text-lg text-sm font-bold">Hello, {user()?.name}</span>
+          </Show>
+          <Show when={!isLogged()}>
+            <span class="lg:text-lg text-sm font-bold">Welcome</span>
+          </Show>
         </div>
         <div class="navbar-center hidden lg:flex">
           <ul class="menu menu-horizontal px-1 lg:text-md gap-2">
