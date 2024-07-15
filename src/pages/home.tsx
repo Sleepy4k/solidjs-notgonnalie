@@ -8,7 +8,7 @@ export default function Home() {
         <div class="flex flex-col gap-4">
           <div class="card shadow-2xl">
             <div class="card-body">
-              <h2 class="card-title">Welcome to {APP_NAME.toUpperCase()}</h2>
+              <h2 class="card-title">Selamat Datang di {APP_NAME.toUpperCase()}</h2>
               <div class='divider divider-lg'></div>
               <p class="text-lg text-gray-500">
                 {APP_NAME} adalah aplikasi mengirim pesan anonim yang dibuat menggunakan SolidJS.

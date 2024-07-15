@@ -1,10 +1,12 @@
 import { EDebugType } from '@enums';
 import { MainLayout } from '@layouts';
 import { CSRFService } from '@services';
-import { println, formValidator } from '@utils';
+import { SweetAlertResult } from 'sweetalert2';
+import { println, formValidator, alert } from '@utils';
 import { createEffect, createSignal, Show } from 'solid-js';
-import { TextInput, TextError, SafeForm } from '@components';
 import { createFormGroup, createFormControl } from 'solid-forms';
+import { BeforeLeaveEventArgs, useBeforeLeave } from '@solidjs/router';
+import { TextInput, TextError, SafeForm, SwalConfirm } from '@components';
 
 export default function Contact() {
   const [loading, setLoading] = createSignal<boolean>(false);
@@ -76,15 +78,32 @@ export default function Contact() {
     }
   });
 
+  useBeforeLeave((e: BeforeLeaveEventArgs) => {
+    if (group.isDirty && !e.defaultPrevented && !group.controls.safe_form.errors) {
+      e.preventDefault();
+      setTimeout(() => {
+        alert.fire({
+          title: 'Konfirmasi',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Ya',
+          cancelButtonText: 'Tidak',
+          html: SwalConfirm() as HTMLElement
+        }).then((result: SweetAlertResult) => {
+          if (result.isConfirmed) e.retry(true);
+        });
+      }, 100);
+    }
+  });
+
   return (
     <SafeForm regenerate={!!group.controls.safe_form.errors}>
-      <MainLayout title='Contact Us' disabled={loading()}>
-        <div class="w-[85%] h-full px-4 xl:px-4 2xl:px-5 xl:py-2 overflow-clip">
+      <MainLayout title='Hubungi Kami' disabled={loading()}>
+        <div class="w-full h-screen xl:h-auto xl:w-[30%] 2xl:w-[25%] 3xl:w-[20%] px-4 xl:px-4 2xl:px-5 xl:py-2 overflow-clip">
           <div class="flex flex-col gap-4">
-            {/* Make form to contact us */}
             <div class="card shadow-2xl">
               <div class="card-body">
-                <h2 class="card-title">Contact Us</h2>
+                <h2 class="card-title">Hubungi Kami</h2>
                 <div class='divider divider-lg'></div>
                 <form class="form-control flex flex-col items-stretch gap-3">
                   <label class="input input-bordered min-w-full flex items-center gap-2">
@@ -116,7 +135,7 @@ export default function Contact() {
                       disabled={loading()}
                       placeholder='Your Message'
                       control={group.controls.message}
-                      class='grow input outline-none focus:outline-none border-none border-[0px] h-auto pl-1 pr-0'
+                      class='grow input input-bordered h-auto pl-1 pr-0'
                     />
                   </label>
                   <TextError name='message' control={group.controls.message} />

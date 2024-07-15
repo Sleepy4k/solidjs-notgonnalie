@@ -2,9 +2,11 @@ import { alert } from '@utils';
 import { Auth } from '@contexts';
 import { MainLayout } from '@layouts';
 import { questionModel } from '@models';
+import { SwalConfirm } from '@components';
+import { ESwalConfirmType } from '@enums';
 import { IQuestionModel } from '@interfaces';
 import { useNavigate } from '@solidjs/router';
-import { createEffect, createResource, createSignal, For, Show, Suspense } from 'solid-js';
+import { createEffect, createResource, createSignal, For, onMount, Show, Suspense } from 'solid-js';
 
 export default function Question() {
   const navigate = useNavigate();
@@ -14,21 +16,23 @@ export default function Question() {
   const [filteredData, setFilteredData] = createSignal<IQuestionModel[]>([]);
   const [questions, { mutate, refetch }] = createResource<IQuestionModel[]>(async () => {
     const data = await questionModel.getQuestions();
-    const filteredData = data?.filter((question) => {
-      return question.uid === user()?.id;
-    });
+    const filteredData = data?.filter((question) => question.uid === user()?.id);
 
     setTotal(filteredData?.length || 0);
     return (filteredData == null || filteredData == undefined) ? [] : filteredData;
   });
 
+  onMount(() => {
+    if (!user()) navigate('/404', { replace: true });
+  });
+
   createEffect(() => {
-    if (search().length === 0) {
+    const isSearchEmpty = search().length <= 0;
+
+    if (isSearchEmpty) {
       setFilteredData([]);
       setTotal(questions()?.length || 0);
-    }
-
-    if (search().length > 0 && Array.isArray(questions()) && questions()?.length !== 0) {
+    } else if (!isSearchEmpty && Array.isArray(questions()) && questions()?.length !== 0) {
       const data = questions()?.filter((question) => {
         return question.question.toLowerCase().includes(search().toLowerCase());
       });
@@ -38,23 +42,20 @@ export default function Question() {
     }
   });
 
-  const handleSearch = (e: Event) => {
-    setSearch((e.target as HTMLInputElement).value);
-  }
+  const handleSearch = (e: Event) => setSearch((e.target as HTMLInputElement).value);
 
   const handleDelete = async (id: string) => {
     alert.fire({
-      title: 'Are you sure?',
-      text: 'You will not be able to recover this data!',
+      title: 'Konfirmasi',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, keep it',
+      confirmButtonText: 'Ya, hapus',
+      cancelButtonText: 'Tidak, simpan dulu',
+      html: SwalConfirm(ESwalConfirmType.DELETE) as HTMLElement
     }).then(async (result: any) => {
       if (result.isConfirmed) {
         const status = await questionModel.deleteQuestion(id);
-        console.log(status);
-        
+
         if (status.id != 'NaN') {
           alert.fire('Deleted!', 'Your data has been deleted.', 'success');
           refetch();
@@ -65,6 +66,16 @@ export default function Question() {
     });
   }
 
+  const handleCopy = async (questId: string) => {
+    const el = document.createElement('input');
+    el.value = `${location.origin}/#/${user()?.id}/${questId}`;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    alert.fire('Copied!', 'Link copied to clipboard.', 'success');
+  }
+
   const DataStructur = (props: { question: IQuestionModel }) => (
     <tr>
       <td class="table-cell text-center">{props.question.id || "###"}</td>
@@ -73,9 +84,9 @@ export default function Question() {
         <button
           type='button'
           class="btn btn-ghost"
-          onclick={() => navigate(`/${user()?.id}/${props.question.id}`)}
+          onclick={() => handleCopy(props.question.id?.toString() || '')}
         >
-          Share
+          Copy Link
         </button>
         <button
           type='button'
@@ -103,24 +114,23 @@ export default function Question() {
   )
 
   return (
-    <MainLayout title='Question'>
+    <MainLayout title='Pertanyaan'>
       <div class="w-[85%] h-full px-4 xl:px-4 2xl:px-5 xl:py-2 overflow-clip">
         <div class="flex flex-col gap-4">
-          {/* Make total data on left corner, title on middle, button add on right corner */}
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="lg:text-lg text-sm font-bold">Total Data: {total()}</span>
+            <div class="flex items-center">
+              <span class="lg:text-lg text-xs font-bold">Total Pertanyaan: {total()}</span>
             </div>
 
-            <h2 class="lg:text-2xl text-sm font-bold">Question</h2>
+            <h2 class="lg:text-2xl text-sm font-bold">Pertanyaan</h2>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center">
               <button
                 type='button'
-                class="btn btn-primary"
+                class="btn btn-primary lg:w-[7vw] w-[18vw] lg:h-[5vh] h-[4vh] lg:text-lg text-xs"
                 onClick={() => navigate('/questions/add')}
               >
-                Add
+                Tambah
               </button>
             </div>
           </div>
@@ -129,37 +139,34 @@ export default function Question() {
 
           <div class="card shadow-2xl">
             <div class="card-body">
-              <div>
-                <div>
-                  <div class="flex items center justify-between">
-                    {/* Make button refresh */}
-                    <div class="flex items-center gap-2">
-                      <button
-                        type='button'
-                        class="btn btn-primary"
-                        onclick={() => refetch()}
-                      >
-                        Refresh
-                      </button>
-                    </div>
-                  </div>
+              <div class="flex items center justify-between">
+                <div class="flex items-center gap-2">
+                  <button
+                    type='button'
+                    class="btn btn-primary"
+                    onclick={() => refetch()}
+                  >
+                    Refresh
+                  </button>
                 </div>
-                <div class='absolute top-5 right-5'>
-                  <div class="flex items center justify-between">
-                    <input
-                      type='search'
-                      placeholder='Search'
-                      onchange={(e) => handleSearch(e)}
-                      class="input input-bordered h-[4vh] lg:w-[15vw] w-[50vw]"
-                    />
-                  </div>
+              </div>
+              <div class='lg:absolute lg:top-5 lg:right-5 mt-[2vh]'>
+                <div class="flex items center justify-between">
+                  <input
+                    type='input'
+                    placeholder='Search'
+                    onkeyup={(e) => handleSearch(e)}
+                    class="input input-bordered lg:h-[4vh] h-[2.5rem] lg:w-[15vw] w-[50vw]"
+                  />
                 </div>
-                <table class="table w-[100%] mt-[5vh] mb-[5vh]">
+              </div>
+              <div class='overflow-x-auto'>
+                <table class="table table-auto w-full mt-[5vh] mb-[5vh]">
                   <thead>
                     <tr>
                       <th class="table-cell text-center">ID</th>
-                      <th class="table-cell text-center">Question</th>
-                      <th class="table-cell text-center">Action</th>
+                      <th class="table-cell text-center">Pertanyaan</th>
+                      <th class="table-cell text-center">Aksi</th>
                     </tr>
                   </thead>
                   <tbody>

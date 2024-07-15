@@ -1,17 +1,18 @@
 import { Auth } from '@contexts';
 import { userModel } from '@models';
+import { EDebugType } from '@enums';
 import { AuthLayout } from '@layouts';
 import { CSRFService } from '@services';
-import { useNavigate } from '@solidjs/router';
-import { Show, createSignal } from 'solid-js';
-import { EAuthUpdateCategory, EDebugType } from '@enums';
-import { TextInput, TextError, SafeForm } from '@components';
+import { SweetAlertResult } from 'sweetalert2';
+import { Show, createSignal, onMount } from 'solid-js';
 import { createFormGroup, createFormControl } from 'solid-forms';
-import { encrypt, formValidator, generateKey, println } from '@utils';
+import { TextInput, TextError, SafeForm, SwalConfirm } from '@components';
+import { alert, encrypt, formValidator, generateKey, println } from '@utils';
+import { BeforeLeaveEventArgs, useBeforeLeave, useNavigate } from '@solidjs/router';
 
 export default function Register() {
   const navigate = useNavigate();
-  const { updateData } = Auth.useAuth();
+  const { user } = Auth.useAuth();
   const [loading, setLoading] = createSignal<boolean>(false);
   const group = createFormGroup({
     safe_form: createFormControl(false),
@@ -32,6 +33,10 @@ export default function Register() {
       required: true,
       validators: [formValidator.required, formValidator.minLength, formValidator.maxLength],
     }),
+  });
+
+  onMount(() => {
+    if (user()) navigate('/', { replace: true });
   });
 
   const handleValidation = () => {
@@ -88,6 +93,24 @@ export default function Register() {
 
     navigate('/login', { replace: true });
   };
+
+  useBeforeLeave((e: BeforeLeaveEventArgs) => {
+    if (group.isDirty && !e.defaultPrevented && !group.controls.safe_form.errors) {
+      e.preventDefault();
+      setTimeout(() => {
+        alert.fire({
+          title: 'Konfirmasi',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Ya',
+          cancelButtonText: 'Tidak',
+          html: SwalConfirm() as HTMLElement
+        }).then((result: SweetAlertResult) => {
+          if (result.isConfirmed) e.retry(true);
+        });
+      }, 100);
+    }
+  });
 
   return (
     <SafeForm regenerate={!!group.controls.safe_form.errors}>

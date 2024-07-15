@@ -1,3 +1,4 @@
+import { Auth } from '@contexts';
 import { MainLayout } from '@layouts';
 import { answerModel } from '@models';
 import { IAnswerModel } from '@interfaces';
@@ -11,6 +12,7 @@ interface IQuestionAnswerLocation {
 
 export default function QuestionAnswer() {
   const navigate = useNavigate();
+  const { user } = Auth.useAuth();
   const [total, setTotal] = createSignal<number>(0);
   const { state } = useLocation<IQuestionAnswerLocation>();
   const [answers, { mutate, refetch }] = createResource<IAnswerModel[]>(async () => {
@@ -24,6 +26,7 @@ export default function QuestionAnswer() {
   });
 
   onMount(() => {
+    if (!user()) navigate('/404', { replace: true });
     if (!state || state == null || state == undefined) navigate('/questions', { replace: true });
   });
 
@@ -35,47 +38,44 @@ export default function QuestionAnswer() {
   )
 
   return (
-    <MainLayout title='Answer'>
+    <MainLayout title='Jawaban Pertanyaan'>
       <div class="w-[85%] h-full px-4 xl:px-4 2xl:px-5 xl:py-2 overflow-clip">
         <div class="flex flex-col gap-4">
           {/* Make total data on left corner, title on middle, button add on right corner */}
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
+          <div class="flex items-center justify-between lg:gap-0 gap-5">
+            <div class="flex items-center">
               <span class="lg:text-lg text-sm font-bold">Total Data: {total()}</span>
             </div>
 
-            <h2 class="lg:text-2xl text-sm font-bold">List Jawaban ({state?.question})</h2>
+            <h2 class="lg:text-2xl text-xs font-bold text-center">List Jawaban ({state?.question})</h2>
 
-            <div class="flex items-center gap-2" />
+            <div class="flex items-center" />
           </div>
 
           <div class="divider divider-lg" />
 
           <div class="card shadow-2xl">
             <div class="card-body">
-              <div>
-                <div>
-                  <div class="flex items center justify-between">
-                    {/* Make button refresh */}
-                    <div class="flex items-center gap-2">
-                      <button
-                        type='button'
-                        class="btn btn-primary"
-                        onclick={() => navigate('/questions')}
-                      >
-                        Back
-                      </button>
-                      <button
-                        type='button'
-                        class="btn btn-primary"
-                        onclick={() => refetch()}
-                      >
-                        Refresh
-                      </button>
-                    </div>
-                  </div>
+              <div class="flex items center justify-between">
+                <div class="flex items-center lg:gap-3 gap-4">
+                  <button
+                    type='button'
+                    class="btn btn-neutral"
+                    onclick={() => navigate('/questions')}
+                  >
+                    Back
+                  </button>
+                  <button
+                    type='button'
+                    class="btn btn-primary"
+                    onclick={() => refetch()}
+                  >
+                    Refresh
+                  </button>
                 </div>
-                <table class="table w-[100%] mt-[5vh] mb-[5vh]">
+              </div>
+              <div class='overflow-x-auto'>
+                <table class="table table-auto w-full mt-[5vh] mb-[5vh]">
                   <thead>
                     <tr>
                       <th class="table-cell text-center">ID</th>

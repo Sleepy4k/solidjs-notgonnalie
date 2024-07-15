@@ -3,11 +3,12 @@ import { EDebugType } from '@enums';
 import { MainLayout } from '@layouts';
 import { CSRFService } from '@services';
 import { questionModel } from '@models';
-import { useNavigate } from '@solidjs/router';
-import { createSignal, Show } from 'solid-js';
-import { println, formValidator } from '@utils';
-import { TextInput, TextError, SafeForm } from '@components';
+import { SweetAlertResult } from 'sweetalert2';
+import { createSignal, onMount, Show } from 'solid-js';
+import { println, formValidator, alert } from '@utils';
 import { createFormGroup, createFormControl } from 'solid-forms';
+import { TextInput, TextError, SafeForm, SwalConfirm } from '@components';
+import { BeforeLeaveEventArgs, useBeforeLeave, useNavigate } from '@solidjs/router';
 
 export default function AddQuestion() {
   const navigate = useNavigate();
@@ -19,6 +20,10 @@ export default function AddQuestion() {
       required: true,
       validators: [formValidator.required, formValidator.minLength, formValidator.maxLength],
     }),
+  });
+
+  onMount(() => {
+    if (!user()) navigate('/404', { replace: true });
   });
 
   const handleValidation = () => {
@@ -35,8 +40,6 @@ export default function AddQuestion() {
     if (!CSRFService.validateToken()) {
       group.controls.safe_form.setErrors({ invalid: 'csrf token tidak valid' });
       return;
-    } else {
-      group.controls.safe_form.setErrors(null);
     }
 
     group.markSubmitted(true);
@@ -62,32 +65,58 @@ export default function AddQuestion() {
     }
   };
 
+  useBeforeLeave((e: BeforeLeaveEventArgs) => {
+    if (group.isDirty && !e.defaultPrevented && !group.controls.safe_form.errors) {
+      e.preventDefault();
+      setTimeout(() => {
+        alert.fire({
+          title: 'Konfirmasi',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Ya',
+          cancelButtonText: 'Tidak',
+          html: SwalConfirm() as HTMLElement
+        }).then((result: SweetAlertResult) => {
+          if (result.isConfirmed) e.retry(true);
+        });
+      }, 100);
+    }
+  });
+
   return (
     <SafeForm regenerate={!!group.controls.safe_form.errors}>
-      <MainLayout title='Add Question'>
-        <div class="w-[85%] h-full px-4 xl:px-4 2xl:px-5 xl:py-2 overflow-clip">
+      <MainLayout title='Tambah Pertanyaan'>
+        <div class="w-full h-screen xl:h-auto xl:w-[30%] 2xl:w-[25%] 3xl:w-[20%] px-4 xl:px-4 2xl:px-5 xl:py-2 overflow-clip">
           <div class="flex flex-col gap-4">
             {/* Make form add question */}
             <div class="card shadow-2xl">
               <div class="card-body">
-                <h2 class="card-title">Add Question</h2>
+                <h2 class="card-title">Tambah Pertanyaan</h2>
                 <div class='divider divider-lg'></div>
                 {/* Make form to add question */}
-                <form class="form-control flex flex-col items-stretch gap-3">
+                <div class="form-control flex flex-col items-stretch gap-3">
                   <label class="input input-bordered min-w-full flex items-center gap-2">
                     <TextInput
                       type='text'
                       name='question'
                       disabled={loading()}
-                      placeholder='Question'
+                      placeholder='Pertanyaan Kamu'
                       control={group.controls.question}
                       class='grow input outline-none focus:outline-none border-none border-[0px] h-auto pl-1 pr-0'
                     />
                   </label>
-                  <TextError name='Question' control={group.controls.question} />
+                  <TextError name='Pertanyaan kamu' control={group.controls.question} />
                   <div class="flex items-center justify-between" />
                   <div class="divider text-sm" />
-                  <div class='flex justify-center'>
+                  <div class='flex justify-center gap-5'>
+                    <button
+                      type='button'
+                      disabled={loading()}
+                      onClick={() => navigate('/questions')}
+                      class="btn btn-block dark:btn-neutral w-[25%]"
+                    >
+                      Kembali
+                    </button>
                     <button
                       type='submit'
                       disabled={loading()}
@@ -103,17 +132,6 @@ export default function AddQuestion() {
                       </Show>
                     </button>
                   </div>
-                </form>
-
-                <div class="w-full flex justify-center items-center gap-4 mt-2">
-                  <button
-                    type='button'
-                    disabled={loading()}
-                    onClick={() => navigate('/questions')}
-                    class="btn btn-block dark:btn-neutral w-[25%]"
-                  >
-                    Back
-                  </button>
                 </div>
               </div>
             </div>

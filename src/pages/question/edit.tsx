@@ -1,3 +1,4 @@
+import { Auth } from '@contexts';
 import { EDebugType } from '@enums';
 import { MainLayout } from '@layouts';
 import { CSRFService } from '@services';
@@ -16,6 +17,7 @@ interface IQuestionEditLocation {
 
 export default function EditQuestion() {
   const navigate = useNavigate();
+  const { user } = Auth.useAuth();
   const { state } = useLocation<IQuestionEditLocation>();
   const [loading, setLoading] = createSignal<boolean>(false);
   const group = createFormGroup({
@@ -27,6 +29,7 @@ export default function EditQuestion() {
   });
 
   onMount(() => {
+    if (!user()) navigate('/404', { replace: true });
     if (!state || state == null || state == undefined) navigate('/questions', { replace: true });
   });
 
@@ -73,13 +76,13 @@ export default function EditQuestion() {
 
   return (
     <SafeForm regenerate={!!group.controls.safe_form.errors}>
-      <MainLayout title='Edit Question'>
-        <div class="w-[85%] h-full px-4 xl:px-4 2xl:px-5 xl:py-2 overflow-clip">
+      <MainLayout title='Ubah Pertanyaan'>
+        <div class="w-full h-screen xl:h-auto xl:w-[30%] 2xl:w-[25%] 3xl:w-[20%] px-4 xl:px-4 2xl:px-5 xl:py-2 overflow-clip">
           <div class="flex flex-col gap-4">
             {/* Make form add question */}
             <div class="card shadow-2xl">
               <div class="card-body">
-                <h2 class="card-title">Add Question</h2>
+                <h2 class="card-title">Ubah Pertanyaan</h2>
                 <div class='divider divider-lg'></div>
                 {/* Make form to add question */}
                 <form class="form-control flex flex-col items-stretch gap-3">
@@ -88,15 +91,23 @@ export default function EditQuestion() {
                       type='text'
                       name='question'
                       disabled={loading()}
-                      placeholder='Question'
+                      placeholder='Pertanyaan Kamu'
                       control={group.controls.question}
                       class='grow input outline-none focus:outline-none border-none border-[0px] h-auto pl-1 pr-0'
                     />
                   </label>
-                  <TextError name='Question' control={group.controls.question} />
+                  <TextError name='Pertanyaan kamu' control={group.controls.question} />
                   <div class="flex items-center justify-between" />
                   <div class="divider text-sm" />
-                  <div class='flex justify-center'>
+                  <div class='flex justify-center gap-5'>
+                    <button
+                      type='button'
+                      disabled={loading()}
+                      onClick={() => navigate('/questions')}
+                      class="btn btn-block dark:btn-neutral w-[25%]"
+                    >
+                      Kembali
+                    </button>
                     <button
                       type='submit'
                       disabled={loading()}
@@ -113,17 +124,6 @@ export default function EditQuestion() {
                     </button>
                   </div>
                 </form>
-
-                <div class="w-full flex justify-center items-center gap-4 mt-2">
-                  <button
-                    type='button'
-                    disabled={loading()}
-                    onClick={() => navigate('/questions')}
-                    class="btn btn-block dark:btn-neutral w-[25%]"
-                  >
-                    Back
-                  </button>
-                </div>
               </div>
             </div>
           </div>

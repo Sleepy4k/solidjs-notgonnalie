@@ -3,7 +3,7 @@ import { userModel } from '@models';
 import { AuthLayout } from '@layouts';
 import { CSRFService } from '@services';
 import { useNavigate } from '@solidjs/router';
-import { Show, createSignal } from 'solid-js';
+import { Show, createSignal, onMount } from 'solid-js';
 import { formValidator, println, verify } from '@utils';
 import { EAuthUpdateCategory, EDebugType } from '@enums';
 import { TextInput, TextError, SafeForm } from '@components';
@@ -11,7 +11,7 @@ import { createFormGroup, createFormControl } from 'solid-forms';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { updateData } = Auth.useAuth();
+  const { user, updateData } = Auth.useAuth();
   const [loading, setLoading] = createSignal<boolean>(false);
   const group = createFormGroup({
     safe_form: createFormControl(false),
@@ -23,6 +23,10 @@ export default function Login() {
       required: true,
       validators: [formValidator.required, formValidator.minLength, formValidator.maxLength],
     })
+  });
+
+  onMount(() => {
+    if (user()) navigate('/', { replace: true });
   });
 
   const handleValidation = () => {
