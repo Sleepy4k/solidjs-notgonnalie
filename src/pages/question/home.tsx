@@ -68,7 +68,7 @@ export default function Question() {
 
   const handleCopy = async (questId: string) => {
     const el = document.createElement('input');
-    el.value = `${location.origin}/#/${user()?.id}/${questId}`;
+    el.value = `${location.href}/#/${user()?.id}/${questId}`;
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');
