@@ -9,6 +9,7 @@ import { BeforeLeaveEventArgs, useBeforeLeave } from '@solidjs/router';
 import { TextInput, TextError, SafeForm, SwalConfirm } from '@components';
 
 export default function Contact() {
+  const [cleared, setCleared] = createSignal<boolean>(false);
   const [loading, setLoading] = createSignal<boolean>(false);
   const group = createFormGroup({
     safe_form: createFormControl(false),
@@ -67,7 +68,9 @@ export default function Contact() {
     // Redirect to email client
     window.location.href = `mailto:${email.to}?subject=${email.subject}&body=${email.body}`;
 
+    setCleared(true);
     setLoading(false);
+    group.markSubmitted(false);
   };
 
   createEffect(() => {
@@ -79,7 +82,7 @@ export default function Contact() {
   });
 
   useBeforeLeave((e: BeforeLeaveEventArgs) => {
-    if (group.isDirty && !e.defaultPrevented && !group.controls.safe_form.errors) {
+    if (group.isDirty && !e.defaultPrevented && !group.controls.safe_form.errors && !cleared()) {
       e.preventDefault();
       setTimeout(() => {
         alert.fire({

@@ -3,11 +3,12 @@ import { EDebugType } from '@enums';
 import { MainLayout } from '@layouts';
 import { CSRFService } from '@services';
 import { questionModel } from '@models';
-import { println, formValidator } from '@utils';
+import { SweetAlertResult } from 'sweetalert2';
 import { createSignal, onMount, Show } from 'solid-js';
-import { useLocation, useNavigate } from '@solidjs/router';
-import { TextInput, TextError, SafeForm } from '@components';
+import { println, formValidator, alert } from '@utils';
 import { createFormGroup, createFormControl } from 'solid-forms';
+import { TextInput, TextError, SafeForm, SwalConfirm } from '@components';
+import { BeforeLeaveEventArgs, useBeforeLeave, useLocation, useNavigate } from '@solidjs/router';
 
 interface IQuestionEditLocation {
   id: string;
@@ -19,6 +20,7 @@ export default function EditQuestion() {
   const navigate = useNavigate();
   const { user } = Auth.useAuth();
   const { state } = useLocation<IQuestionEditLocation>();
+  const [cleared, setCleared] = createSignal<boolean>(false);
   const [loading, setLoading] = createSignal<boolean>(false);
   const group = createFormGroup({
     safe_form: createFormControl(false),
@@ -67,12 +69,31 @@ export default function EditQuestion() {
     setLoading(false);
 
     if (result.id != 'NaN') {
+      setCleared(true);
       println('System', 'Berhasil mengubah pertanyaan', EDebugType.SUCCESS);
       navigate('/question', { replace: true });
     } else {
       println('System', 'Gagal mengubah pertanyaan', EDebugType.ERROR);
     }
   };
+
+  useBeforeLeave((e: BeforeLeaveEventArgs) => {
+    if (group.isDirty && !e.defaultPrevented && !group.controls.safe_form.errors && !cleared()) {
+      e.preventDefault();
+      setTimeout(() => {
+        alert.fire({
+          title: 'Konfirmasi',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Ya',
+          cancelButtonText: 'Tidak',
+          html: SwalConfirm() as HTMLElement
+        }).then((result: SweetAlertResult) => {
+          if (result.isConfirmed) e.retry(true);
+        });
+      }, 100);
+    }
+  });
 
   return (
     <SafeForm regenerate={!!group.controls.safe_form.errors}>

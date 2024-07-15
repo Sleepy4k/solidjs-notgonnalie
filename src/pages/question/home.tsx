@@ -1,11 +1,11 @@
 import { alert } from '@utils';
 import { Auth } from '@contexts';
 import { MainLayout } from '@layouts';
-import { questionModel } from '@models';
 import { SwalConfirm } from '@components';
 import { ESwalConfirmType } from '@enums';
 import { IQuestionModel } from '@interfaces';
 import { useNavigate } from '@solidjs/router';
+import { answerModel, questionModel } from '@models';
 import { createEffect, createResource, createSignal, For, onMount, Show, Suspense } from 'solid-js';
 
 export default function Question() {
@@ -54,6 +54,14 @@ export default function Question() {
       html: SwalConfirm(ESwalConfirmType.DELETE) as HTMLElement
     }).then(async (result: any) => {
       if (result.isConfirmed) {
+        const answers = await answerModel.getAnswers();
+
+        if (answers.length > 0) answers?.forEach(async (answer) => {
+          if (answer.questId === id) {
+            await answerModel.deleteAnswer(answer.id?.toString() || '');
+          }
+        });
+
         const status = await questionModel.deleteQuestion(id);
 
         if (status.id != 'NaN') {
@@ -66,15 +74,24 @@ export default function Question() {
     });
   }
 
-  const handleCopy = async (questId: string) => {
+  const handleCopy = (questId: string) => {
+    // Get current URL
     let url = location.href.split('#')[0];
     url = url.endsWith('/') ? url.slice(0, -1) : url;
+
+    // Create input element and assign value
     const el = document.createElement('input');
     el.value = `${url}/#/${user()?.id}/${questId}`;
+
+    // Append to body and select the text
     document.body.appendChild(el);
     el.select();
+
+    // Copy to clipboard and remove element
     document.execCommand('copy');
     document.body.removeChild(el);
+
+    // Show alert when the link is copied
     alert.fire('Copied!', 'Link copied to clipboard.', 'success');
   }
 

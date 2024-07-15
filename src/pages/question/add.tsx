@@ -13,6 +13,7 @@ import { BeforeLeaveEventArgs, useBeforeLeave, useNavigate } from '@solidjs/rout
 export default function AddQuestion() {
   const navigate = useNavigate();
   const { user } = Auth.useAuth();
+  const [cleared, setCleared] = createSignal<boolean>(false);
   const [loading, setLoading] = createSignal<boolean>(false);
   const group = createFormGroup({
     safe_form: createFormControl(false),
@@ -58,15 +59,16 @@ export default function AddQuestion() {
     setLoading(false);
 
     if (result) {
+      setCleared(true);
       println('System', 'Berhasil menambahkan pertanyaan', EDebugType.SUCCESS);
-      navigate('/question', { replace: true });
+      navigate('/question');
     } else {
       println('System', 'Gagal menambahkan pertanyaan', EDebugType.ERROR);
     }
   };
 
   useBeforeLeave((e: BeforeLeaveEventArgs) => {
-    if (group.isDirty && !e.defaultPrevented && !group.controls.safe_form.errors) {
+    if (group.isDirty && !e.defaultPrevented && !group.controls.safe_form.errors && !cleared()) {
       e.preventDefault();
       setTimeout(() => {
         alert.fire({

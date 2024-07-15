@@ -13,6 +13,7 @@ import { BeforeLeaveEventArgs, useBeforeLeave, useNavigate } from '@solidjs/rout
 export default function Register() {
   const navigate = useNavigate();
   const { user } = Auth.useAuth();
+  const [cleared, setCleared] = createSignal<boolean>(false);
   const [loading, setLoading] = createSignal<boolean>(false);
   const group = createFormGroup({
     safe_form: createFormControl(false),
@@ -88,6 +89,7 @@ export default function Register() {
       return;
     }
 
+    setCleared(true);
     setLoading(false);
     println('System', `Selamat bergabung ${group.value.name}`, EDebugType.SUCCESS);
 
@@ -95,7 +97,7 @@ export default function Register() {
   };
 
   useBeforeLeave((e: BeforeLeaveEventArgs) => {
-    if (group.isDirty && !e.defaultPrevented && !group.controls.safe_form.errors) {
+    if (group.isDirty && !e.defaultPrevented && !group.controls.safe_form.errors && !cleared()) {
       e.preventDefault();
       setTimeout(() => {
         alert.fire({
