@@ -1,8 +1,10 @@
 import { alert } from '@utils';
 import { Auth } from '@contexts';
 import { A } from '@solidjs/router';
-import ChangeTheme from '@components/change.theme';
+import SwalConfirm from '../swal.confirm';
+import { ESwalConfirmType } from '@enums';
 import { Match, Show, Switch } from 'solid-js';
+import ChangeTheme from '@components/change.theme';
 
 interface INavBarProps {
   disabled?: boolean;
@@ -18,11 +20,11 @@ export default function NavBar(props: INavBarProps) {
   const handleLogout = () => {
     alert.fire({
       title: 'Konfirmasi',
-      text: 'Apakah kamu yakin ingin keluar?',
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
+      confirmButtonText: 'Ya',
+      cancelButtonText: 'Tidak',
+      html: SwalConfirm(ESwalConfirmType.LOGOUT) as HTMLElement
     }).then((result: any) => {
       if (result.isConfirmed) logoutUser();
     });
@@ -35,7 +37,7 @@ export default function NavBar(props: INavBarProps) {
           <A href='/' end>Home</A>
         </li>
         <li>
-          <A href='/contact'>Contact US</A>
+          <A href='/contact'>Hubungi Kami</A>
         </li>
         <li>
           <A href='/changelogs' >ChangeLogs</A>
@@ -53,7 +55,7 @@ export default function NavBar(props: INavBarProps) {
           <span class={handleActive('/')}>Home</span>
         </li>
         <li>
-          <span class={handleActive('/contact')}>Contact US</span>
+          <span class={handleActive('/contact')}>Hubungi Kami</span>
         </li>
         <li>
           <span class={handleActive('/changelogs')}>ChangeLogs</span>
@@ -75,10 +77,10 @@ export default function NavBar(props: INavBarProps) {
           <A href='/' end>Home</A>
         </li>
         <li>
-          <A href='/questions'>Question</A>
+          <A href='/questions'>QnA</A>
         </li>
         <li>
-          <A href='/contact'>Contact US</A>
+          <A href='/contact'>Hubungi Kami</A>
         </li>
         <li>
           <A href='/changelogs' >ChangeLogs</A>
@@ -102,7 +104,10 @@ export default function NavBar(props: INavBarProps) {
           <span class={handleActive('/')}>Home</span>
         </li>
         <li>
-          <span class={handleActive('/contact')}>Contact US</span>
+          <span class={handleActive('/questions')}>QnA</span>
+        </li>
+        <li>
+          <span class={handleActive('/contact')}>Hubungi Kami</span>
         </li>
         <li>
           <span class={handleActive('/changelogs')}>ChangeLogs</span>
