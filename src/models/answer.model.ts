@@ -1,15 +1,10 @@
 import { fireStore } from "@services";
 import { IAnswerModel } from "@interfaces";
 import {
-  doc,
   addDoc,
   getDoc,
   getDocs,
-  deleteDoc,
-  updateDoc,
-  collection,
-  query,
-  where
+  collection
 } from 'firebase/firestore';
 
 export const getAnswers = async () => {

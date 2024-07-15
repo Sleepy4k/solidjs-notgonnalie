@@ -1,5 +1,5 @@
 import { fireStore } from "@services";
-import { IUserModel } from "@interfaces";
+import { IUserModel, ICreateUserPayload } from "@interfaces";
 import {
   where,
   query,
@@ -8,11 +8,6 @@ import {
   getDocs,
   collection
 } from 'firebase/firestore';
-
-interface ICreateUserPayload extends IUserModel {
-  key: string;
-  role: string;
-}
 
 export const getUsers = async () => {
   const users: IUserModel[] = [];

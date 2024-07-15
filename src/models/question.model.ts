@@ -7,9 +7,7 @@ import {
   getDocs,
   deleteDoc,
   updateDoc,
-  collection,
-  query,
-  where
+  collection
 } from 'firebase/firestore';
 
 export const getQuestions = async () => {
