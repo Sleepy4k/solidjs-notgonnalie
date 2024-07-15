@@ -5,4 +5,12 @@ interface IUserModel {
   password: string;
 }
 
-export default IUserModel;
+interface ICreateUserPayload extends IUserModel {
+  key: string;
+  role: string;
+}
+
+export type {
+  IUserModel,
+  ICreateUserPayload
+};

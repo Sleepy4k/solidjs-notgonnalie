@@ -1,8 +1,8 @@
 import IServiceProp from './service.prop';
 import { IMainLayoutProp } from "./layout";
 import IProviderProp from './provider.prop';
-import { IUserModel, IAnswerModel, IQuestionModel } from './model';
 import { IMetaContext, IThemeContext, IAuthContext } from "./context";
+import { IUserModel, IAnswerModel, IQuestionModel, ICreateUserPayload } from './model';
 
 export type {
   IAuthContext,
@@ -13,5 +13,6 @@ export type {
   IMainLayoutProp,
   IUserModel,
   IAnswerModel,
-  IQuestionModel
+  IQuestionModel,
+  ICreateUserPayload
 };
