@@ -1,9 +1,11 @@
 import { fireStore } from "@services";
 import { IAnswerModel } from "@interfaces";
 import {
+  doc,
   addDoc,
   getDoc,
   getDocs,
+  deleteDoc,
   collection
 } from 'firebase/firestore';
 
@@ -33,4 +35,9 @@ export const createAnswer = async (data: IAnswerModel) => {
     questId: docSnap.data().questId,
     answer: docSnap.data().answer
   };
+}
+
+export const deleteAnswer = async (id: string) => {
+  await deleteDoc(doc(fireStore, "answers", id));
+  return { id };
 }
