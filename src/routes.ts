@@ -43,6 +43,10 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import('@pages/errors/419')),
   },
   {
+    path: '/404',
+    component: lazy(() => import('@pages/errors/404')),
+  },
+  {
     path: "/:uid/:questid",
     component: lazy(() => import("@pages/share")),
   },

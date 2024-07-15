@@ -1,5 +1,5 @@
-import { CSRF_KEY_NAME, CSRF_TOKEN_NAME, CSRF_RANDOMIZER_SALT } from '@consts';
 import { setAndDeleteStorage, getStorage, deleteStorage } from '@utils';
+import { CSRF_KEY_NAME, CSRF_TOKEN_NAME, CSRF_RANDOMIZER_SALT } from '@consts';
 
 const generateIds = () => {
   const generatedIds = Array.from({ length: 10 }, () => Math.floor(Math.random() * 10)).join('');
