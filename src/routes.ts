@@ -15,20 +15,24 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("@pages/changelogs")),
   },
   {
-    path: "/questions",
+    path: "/question",
     component: lazy(() => import("@pages/question/home")),
   },
   {
-    path: "/questions/add",
+    path: "/question/add",
     component: lazy(() => import("@pages/question/add")),
   },
   {
-    path: "/questions/edit",
+    path: "/question/edit",
     component: lazy(() => import("@pages/question/edit")),
   },
   {
-    path: "/questions/answer",
-    component: lazy(() => import("@pages/question/answer")),
+    path: "/answer",
+    component: lazy(() => import("@pages/answer/home")),
+  },
+  {
+    path: "/answer/show",
+    component: lazy(() => import("@pages/answer/show")),
   },
   {
     path: '/login',
