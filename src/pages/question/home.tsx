@@ -93,14 +93,14 @@ export default function Question() {
         <button
           type='button'
           class="btn btn-ghost"
-          onclick={() => navigate('/questions/answer', { state: { questId: props.question.id?.toString(), question: props.question.question } })}
+          onclick={() => navigate('/answer', { state: { questId: props.question.id?.toString(), question: props.question.question } })}
         >
           Jawaban
         </button>
         <button
           type='button'
           class="btn btn-ghost"
-          onclick={() => navigate('/questions/edit', { state: props.question })}
+          onclick={() => navigate('/question/edit', { state: props.question })}
         >
           Edit
         </button>
@@ -130,7 +130,7 @@ export default function Question() {
               <button
                 type='button'
                 class="btn btn-primary lg:w-[7vw] w-[18vw] lg:h-[5vh] h-[4vh] lg:text-lg text-xs"
-                onClick={() => navigate('/questions/add')}
+                onClick={() => navigate('/question/add')}
               >
                 Tambah
               </button>

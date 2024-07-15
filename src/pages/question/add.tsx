@@ -59,7 +59,7 @@ export default function AddQuestion() {
 
     if (result) {
       println('System', 'Berhasil menambahkan pertanyaan', EDebugType.SUCCESS);
-      navigate('/questions', { replace: true });
+      navigate('/question', { replace: true });
     } else {
       println('System', 'Gagal menambahkan pertanyaan', EDebugType.ERROR);
     }
@@ -112,7 +112,7 @@ export default function AddQuestion() {
                     <button
                       type='button'
                       disabled={loading()}
-                      onClick={() => navigate('/questions')}
+                      onClick={() => navigate('/question')}
                       class="btn btn-block dark:btn-neutral w-[25%]"
                     >
                       Kembali

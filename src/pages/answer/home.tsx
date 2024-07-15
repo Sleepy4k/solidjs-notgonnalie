@@ -5,16 +5,16 @@ import { IAnswerModel } from '@interfaces';
 import { useLocation, useNavigate } from '@solidjs/router';
 import { createResource, createSignal, For, onMount, Show, Suspense } from 'solid-js';
 
-interface IQuestionAnswerLocation {
+interface IAnswerLocation {
   questId: string;
   question: string;
 }
 
-export default function QuestionAnswer() {
+export default function Answer() {
   const navigate = useNavigate();
   const { user } = Auth.useAuth();
+  const { state } = useLocation<IAnswerLocation>();
   const [total, setTotal] = createSignal<number>(0);
-  const { state } = useLocation<IQuestionAnswerLocation>();
   const [answers, { mutate, refetch }] = createResource<IAnswerModel[]>(async () => {
     const data = await answerModel.getAnswers();
     const filteredData = data?.filter((answer) => {
@@ -27,13 +27,28 @@ export default function QuestionAnswer() {
 
   onMount(() => {
     if (!user()) navigate('/404', { replace: true });
-    if (!state || state == null || state == undefined) navigate('/questions', { replace: true });
+    if (!state || state == null || state == undefined) navigate('/question', { replace: true });
   });
 
   const DataStructur = (props: { answer: IAnswerModel }) => (
     <tr>
       <td class="table-cell text-center">{props.answer.id || "###"}</td>
       <td class="table-cell text-center">{props.answer.answer}</td>
+      <td class="table-cell text-center">
+        <button
+          type='button'
+          class="btn btn-ghost"
+          onclick={() => navigate('/answer/show', {
+            state: {
+              questId: state?.questId || '0',
+              question: state?.question || '###',
+              answer: props.answer.answer
+            }
+          })}
+        >
+          Show
+        </button>
+      </td>
     </tr>
   )
 
@@ -44,7 +59,7 @@ export default function QuestionAnswer() {
           {/* Make total data on left corner, title on middle, button add on right corner */}
           <div class="flex items-center justify-between lg:gap-0 gap-5">
             <div class="flex items-center">
-              <span class="lg:text-lg text-sm font-bold">Total Data: {total()}</span>
+              <span class="lg:text-lg text-sm font-bold">Total Jawaban: {total()}</span>
             </div>
 
             <h2 class="lg:text-2xl text-xs font-bold text-center">List Jawaban ({state?.question})</h2>
@@ -61,7 +76,7 @@ export default function QuestionAnswer() {
                   <button
                     type='button'
                     class="btn btn-neutral"
-                    onclick={() => navigate('/questions')}
+                    onclick={() => navigate('/question')}
                   >
                     Back
                   </button>
@@ -79,17 +94,20 @@ export default function QuestionAnswer() {
                   <thead>
                     <tr>
                       <th class="table-cell text-center">ID</th>
-                      <th class="table-cell text-center">Answer</th>
+                      <th class="table-cell text-center">Jawaban</th>
+                      <th class="table-cell text-center">Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
                     <Suspense fallback={
                       <tr>
+                        <td class="table-cell text-center"></td>
                         <td class="table-cell text-center">
                           <div class="flex justify-center items-center w-full h-[35vh]">
                             <div class="loading loading-lg" />
                           </div>
                         </td>
+                        <td class="table-cell text-center"></td>
                       </tr>
                     }>
                       <Show when={Array.isArray(answers()) && answers()?.length === 0}>
@@ -98,7 +116,7 @@ export default function QuestionAnswer() {
                           <td class="table-cell text-center">
                             <div class="flex justify-center items-center w-full h-[35vh]">
                               <p class="text-2xl">
-                                Belum ada pertanyaan
+                                Belum ada jawaban
                               </p>
                             </div>
                           </td>

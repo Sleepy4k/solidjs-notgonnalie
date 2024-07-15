@@ -30,7 +30,7 @@ export default function EditQuestion() {
 
   onMount(() => {
     if (!user()) navigate('/404', { replace: true });
-    if (!state || state == null || state == undefined) navigate('/questions', { replace: true });
+    if (!state || state == null || state == undefined) navigate('/question', { replace: true });
   });
 
   const handleValidation = () => {
@@ -68,7 +68,7 @@ export default function EditQuestion() {
 
     if (result.id != 'NaN') {
       println('System', 'Berhasil mengubah pertanyaan', EDebugType.SUCCESS);
-      navigate('/questions', { replace: true });
+      navigate('/question', { replace: true });
     } else {
       println('System', 'Gagal mengubah pertanyaan', EDebugType.ERROR);
     }
@@ -103,7 +103,7 @@ export default function EditQuestion() {
                     <button
                       type='button'
                       disabled={loading()}
-                      onClick={() => navigate('/questions')}
+                      onClick={() => navigate('/question')}
                       class="btn btn-block dark:btn-neutral w-[25%]"
                     >
                       Kembali
