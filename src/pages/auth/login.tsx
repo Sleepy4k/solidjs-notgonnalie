@@ -11,7 +11,7 @@ import { createFormGroup, createFormControl } from 'solid-forms';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { user, updateData } = Auth.useAuth();
+  const { isLogged, updateData } = Auth.useAuth();
   const [loading, setLoading] = createSignal<boolean>(false);
   const group = createFormGroup({
     safe_form: createFormControl(false),
@@ -26,7 +26,7 @@ export default function Login() {
   });
 
   onMount(() => {
-    if (user()) navigate('/', { replace: true });
+    if (isLogged()) navigate('/', { replace: true });
   });
 
   const handleValidation = () => {

@@ -12,7 +12,7 @@ import { BeforeLeaveEventArgs, useBeforeLeave, useNavigate } from '@solidjs/rout
 
 export default function AddQuestion() {
   const navigate = useNavigate();
-  const { user } = Auth.useAuth();
+  const { user, isLogged } = Auth.useAuth();
   const [cleared, setCleared] = createSignal<boolean>(false);
   const [loading, setLoading] = createSignal<boolean>(false);
   const group = createFormGroup({
@@ -24,7 +24,7 @@ export default function AddQuestion() {
   });
 
   onMount(() => {
-    if (!user()) navigate('/404', { replace: true });
+    if (!isLogged()) navigate('/404', { replace: true });
   });
 
   const handleValidation = () => {
@@ -97,14 +97,14 @@ export default function AddQuestion() {
                 <div class='divider divider-lg'></div>
                 {/* Make form to add question */}
                 <div class="form-control flex flex-col items-stretch gap-3">
-                  <label class="input input-bordered min-w-full flex items-center gap-2">
+                  <label class="input-bordered">
                     <TextInput
-                      type='text'
+                      type='textarea'
                       name='question'
                       disabled={loading()}
                       placeholder='Pertanyaan Kamu'
                       control={group.controls.question}
-                      class='grow input outline-none focus:outline-none border-none border-[0px] h-auto pl-1 pr-0'
+                      class='grow input input-bordered h-auto pl-1 pr-0'
                     />
                   </label>
                   <TextError name='Pertanyaan kamu' control={group.controls.question} />

@@ -1,6 +1,6 @@
-import { alert } from '@utils';
 import { Auth } from '@contexts';
 import { MainLayout } from '@layouts';
+import { alert, trimText } from '@utils';
 import { SwalConfirm } from '@components';
 import { ESwalConfirmType } from '@enums';
 import { IQuestionModel } from '@interfaces';
@@ -10,7 +10,7 @@ import { createEffect, createResource, createSignal, For, onMount, Show, Suspens
 
 export default function Question() {
   const navigate = useNavigate();
-  const { user } = Auth.useAuth();
+  const { user, isLogged } = Auth.useAuth();
   const [total, setTotal] = createSignal<number>(0);
   const [search, setSearch] = createSignal<string>('');
   const [filteredData, setFilteredData] = createSignal<IQuestionModel[]>([]);
@@ -23,7 +23,7 @@ export default function Question() {
   });
 
   onMount(() => {
-    if (!user()) navigate('/404', { replace: true });
+    if (!isLogged()) navigate('/404', { replace: true });
   });
 
   createEffect(() => {
@@ -37,8 +37,10 @@ export default function Question() {
         return question.question.toLowerCase().includes(search().toLowerCase());
       });
 
-      setFilteredData(data || []);
-      setTotal(data?.length || 0);
+      if (data?.length !== 0) {
+        setFilteredData(data || []);
+        setTotal(data?.length || 0);
+      }
     }
   });
 
@@ -98,7 +100,7 @@ export default function Question() {
   const DataStructur = (props: { question: IQuestionModel }) => (
     <tr>
       <td class="table-cell text-center">{props.question.id || "###"}</td>
-      <td class="table-cell text-center">{props.question.question}</td>
+      <td class="table-cell text-center">{trimText(props.question.question, 75)}</td>
       <td class="table-cell text-center">
         <button
           type='button'

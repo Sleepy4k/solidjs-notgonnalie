@@ -12,7 +12,7 @@ import { BeforeLeaveEventArgs, useBeforeLeave, useNavigate } from '@solidjs/rout
 
 export default function Register() {
   const navigate = useNavigate();
-  const { user } = Auth.useAuth();
+  const { isLogged } = Auth.useAuth();
   const [cleared, setCleared] = createSignal<boolean>(false);
   const [loading, setLoading] = createSignal<boolean>(false);
   const group = createFormGroup({
@@ -37,7 +37,7 @@ export default function Register() {
   });
 
   onMount(() => {
-    if (user()) navigate('/', { replace: true });
+    if (isLogged()) navigate('/', { replace: true });
   });
 
   const handleValidation = () => {

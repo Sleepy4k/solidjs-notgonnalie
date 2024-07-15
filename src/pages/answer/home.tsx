@@ -1,4 +1,5 @@
 import { Auth } from '@contexts';
+import { trimText } from '@utils';
 import { MainLayout } from '@layouts';
 import { answerModel } from '@models';
 import { IAnswerModel } from '@interfaces';
@@ -12,7 +13,7 @@ interface IAnswerLocation {
 
 export default function Answer() {
   const navigate = useNavigate();
-  const { user } = Auth.useAuth();
+  const { isLogged } = Auth.useAuth();
   const { state } = useLocation<IAnswerLocation>();
   const [total, setTotal] = createSignal<number>(0);
   const [answers, { mutate, refetch }] = createResource<IAnswerModel[]>(async () => {
@@ -26,14 +27,14 @@ export default function Answer() {
   });
 
   onMount(() => {
-    if (!user()) navigate('/404', { replace: true });
+    if (!isLogged()) navigate('/404', { replace: true });
     if (!state || state == null || state == undefined) navigate('/question', { replace: true });
   });
 
   const DataStructur = (props: { answer: IAnswerModel }) => (
     <tr>
       <td class="table-cell text-center">{props.answer.id || "###"}</td>
-      <td class="table-cell text-center">{props.answer.answer}</td>
+      <td class="table-cell text-center">{trimText(props.answer.answer, 75)}</td>
       <td class="table-cell text-center">
         <button
           type='button'
