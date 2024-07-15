@@ -1,0 +1,1 @@
+import{J as r,I as e,K as o,L as n,B as c}from"./index-D4_EPOrY.js";const i=async()=>{const a=[];return(await c(e(n,"answers"))).forEach(s=>{a.push({id:s.id,questId:s.data().questId,answer:s.data().answer})}),a},w=async a=>{const t=await r(e(n,"answers"),a),s=await o(t);return s.exists()?{id:s.id,questId:s.data().questId,answer:s.data().answer}:null};export{w as c,i as g};
