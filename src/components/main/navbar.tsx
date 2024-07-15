@@ -77,7 +77,7 @@ export default function NavBar(props: INavBarProps) {
           <A href='/' end>Home</A>
         </li>
         <li>
-          <A href='/questions'>QnA</A>
+          <A href='/question'>QnA</A>
         </li>
         <li>
           <A href='/contact'>Hubungi Kami</A>
@@ -104,7 +104,7 @@ export default function NavBar(props: INavBarProps) {
           <span class={handleActive('/')}>Home</span>
         </li>
         <li>
-          <span class={handleActive('/questions')}>QnA</span>
+          <span class={handleActive('/question')}>QnA</span>
         </li>
         <li>
           <span class={handleActive('/contact')}>Hubungi Kami</span>
